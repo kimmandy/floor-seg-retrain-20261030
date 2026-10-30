@@ -1,0 +1,15 @@
+                       e8_init      bok_best      ours_e37
+images                      56            56            56
+macro F1                 0.585         0.636         0.706
+mask mAP                 0.247         0.294         0.369
+mask AP50                0.485         0.545         0.645
+AP_small                 0.138         0.153         0.244
+AP_medium                0.512         0.603         0.602
+water F1                 0.588         0.781         0.816
+bolt F1                  0.385         0.425         0.556
+nut F1                   0.377         0.395         0.486
+oil F1                   0.612         0.596         0.741
+paint F1                 0.571         0.651         0.667
+reflection F1            0.978         0.968         0.973
+hazard FP/empty          0.000         0.000         0.000
+epoch/scene info: [('e8_init', 8, True), ('bok_best', 50, True), ('ours_e37', 37, True)]

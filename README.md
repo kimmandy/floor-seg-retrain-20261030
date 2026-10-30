@@ -2,9 +2,9 @@
 
 > **질문:** 바닥 위 볼트·너트처럼 **아주 작은 물체의 마스크 성능이 학습 파이프라인 수정만으로 실제로 오르는가?**
 >
-> **답 (중간 결과, 100에폭 중 57에폭 기준):** **올랐다.** 같은 데이터·초기 가중치·평가 기준의 기존 학습(baseline)과 같은 에폭끼리 비교하면
-> 작은 물체 마스크 **AP_small 0.226 → 0.308 (+36%)**, **nut F1 0.448 → 0.560 (+0.11)**, **bolt F1 0.521 → 0.593 (+0.07)**.
-> 반대로 water F1은 0.884 → 0.823으로 내려갔다.
+> **답 (100에폭 완료, test 56장):** **올랐다.** 같은 데이터 분할·초기 가중치·평가 기준의 기존 학습(baseline)의 best와 비교하면
+> 작은 물체 마스크 **AP_small 0.153 → 0.244 (+59%)**, **nut F1 0.395 → 0.486**, **bolt F1 0.425 → 0.556**, 6클래스 macro F1 0.636 → 0.706.
+> valid에서 보였던 water F1 하락(0.89 → 0.82)은 test에서는 나타나지 않았다(0.781 → 0.816).
 
 ![valid curves](results/valid_curves.png)
 
@@ -47,35 +47,54 @@
 | best 선택 | valid 6클래스 macro F1 (test는 선택에 쓰지 않음) |
 | 평가 | score ≥ 0.5, mask IoU ≥ 0.5 매칭 F1 + COCO mask AP |
 
-## 3. 결과 (valid 55장, 같은 에폭끼리)
+## 3. 결과
 
-아래 표는 [`results/summary_table.md`](results/summary_table.md)에서 가져왔다. 이 표와 위 그래프는 [`tools/make_report.py`](tools/make_report.py)로 만든다.
+### 3-1. test 56장 (best 선택에 쓰지 않은 분할)
 
-| 지표 | E8 (시작) | baseline best (ep 50) | **이번 best (ep 37)** | baseline 평균 ep 48–57 | **이번 평균 ep 48–57** |
+세 모델 모두 같은 평가 코드, 같은 test 56장으로 평가했다([`results/test_table.txt`](results/test_table.txt)). baseline은 학습 중이던 실행의 valid best(50에폭) 체크포인트다. 평가 코드가 학습 데이터 해시가 다른 체크포인트를 거부해서, 그 검사만 뺀 사본([`tools/eval_any.py`](tools/eval_any.py))으로 평가했다. test 분할, 정책, 클래스 검사는 그대로다.
+
+| 지표 | E8 (시작) | baseline best (ep 50) | **이번 best (ep 37)** |
+|---|---|---|---|
+| **mask AP_small** (COCO, < 32² px) | 0.138 | 0.153 | **0.244** |
+| **nut F1** | 0.377 | 0.395 | **0.486** |
+| **bolt F1** | 0.385 | 0.425 | **0.556** |
+| mask AP50 | 0.485 | 0.545 | **0.645** |
+| mask mAP | 0.247 | 0.294 | **0.369** |
+| mask AP_medium | 0.512 | 0.603 | 0.602 |
+| 6클래스 macro F1 | 0.585 | 0.636 | **0.706** |
+| water F1 | 0.588 | 0.781 | **0.816** |
+| oil F1 | 0.612 | 0.596 | **0.741** |
+| paint F1 | 0.571 | 0.651 | **0.667** |
+| reflection F1 | 0.978 | 0.968 | 0.973 |
+| 빈 판의 위험물 오검출 / 장 | 0 | 0 | 0 |
+
+### 3-2. valid 55장, 같은 에폭끼리 (1–99)
+
+[`results/summary_table.md`](results/summary_table.md) — 위 그래프와 함께 [`tools/make_report.py`](tools/make_report.py)로 만든다.
+
+| 지표 | E8 (시작) | baseline best (ep 50) | **이번 best (ep 37)** | baseline 평균 ep 90–99 | **이번 평균 ep 90–99** |
 |---|---|---|---|---|---|
-| **mask AP_small** (COCO, < 32² px) | 0.153 | 0.235 | **0.307** | 0.226 | **0.308** |
-| **nut F1** | 0.366 | 0.454 | **0.556** | 0.448 | **0.560** |
-| **bolt F1** | 0.404 | 0.515 | **0.594** | 0.521 | **0.593** |
-| mask AP50 | 0.499 | 0.674 | **0.714** | 0.674 | 0.699 |
-| mask mAP | 0.270 | 0.361 | **0.422** | 0.358 | 0.417 |
-| mask AP_medium | 0.486 | 0.642 | **0.696** | 0.637 | 0.683 |
-| 6클래스 macro F1 | 0.574 | 0.759 | **0.785** | 0.751 | 0.768 |
-| water F1 | 0.427 | 0.902 | 0.820 | 0.884 | **0.823 ▼** |
-| oil F1 | 0.750 | 0.902 | 0.917 | 0.882 | 0.846 |
-| paint F1 | 0.524 | 0.800 | 0.821 | 0.797 | 0.804 |
-| reflection F1 | 0.972 | 0.984 | 1.000 | 0.976 | 0.985 |
-| 빈 판의 위험물 오검출 / 장 | 0 | 0 | 0 | 0 | 0 |
+| **mask AP_small** | 0.153 | 0.235 | **0.307** | 0.227 | **0.301** |
+| **nut F1** | 0.366 | 0.454 | **0.556** | 0.425 | **0.547** |
+| **bolt F1** | 0.404 | 0.515 | **0.594** | 0.504 | **0.590** |
+| mask AP50 | 0.499 | 0.674 | **0.714** | 0.669 | 0.705 |
+| mask mAP | 0.270 | 0.361 | **0.422** | 0.355 | 0.426 |
+| 6클래스 macro F1 | 0.574 | 0.759 | **0.785** | 0.747 | 0.762 |
+| water F1 | 0.427 | 0.902 | 0.820 | 0.888 | 0.817 ▼ |
+| oil F1 | 0.750 | 0.902 | 0.917 | 0.895 | 0.830 ▼ |
 
 **해석**
-- **작은 물체 지표(AP_small, nut, bolt)는 1에폭부터 끝까지 baseline보다 위에 있다.** 한두 에폭 운이 아니라 곡선 전체가 위로 올라간 모양이다. baseline의 nut F1은 0.38~0.47에서 정체했는데, 이번에는 2에폭에 이미 그 구간을 넘었다.
-- **water F1은 약 0.06 내려갔다.** 밀집 장면 중 액체 위에 금속을 붙인 60장면이 액체 경계 학습에 영향을 줬을 가능성이 있다(검증 필요).
+- **작은 물체 지표(AP_small, nut, bolt)는 valid 곡선 전체와 test 모두에서 baseline보다 높다.** 한두 에폭 운이 아니다. baseline의 nut F1은 0.38~0.47에서 정체했는데, 이번에는 2에폭에 이미 그 구간을 넘었다.
+- 작은 물체 개선폭은 test에서 더 크다(AP_small: valid +0.07, test +0.09).
+- **valid의 water·oil 하락은 test에서 재현되지 않았다**(test에서는 둘 다 상승). valid 55장 안의 액체 인스턴스가 적어서(water 50, oil 26) 생긴 흔들림일 가능성이 크다.
+- best는 37에폭 이후 63에폭 동안 갱신되지 않았다. 이후는 정체였고, 과적합으로 valid가 떨어지지는 않았다.
 - train loss는 baseline보다 낮지만, 박스 목표와 데이터가 달라서 **절대값으로는 비교할 수 없다** ([`results/train_loss.png`](results/train_loss.png)).
 
 **한계 (해석할 때 주의할 점)**
 1. **세 변경을 동시에 넣었다.** 어느 변경이 얼마나 기여했는지는 이 실험만으로 나눌 수 없다(개별 ablation 필요).
 2. **valid가 55장뿐이다.** 에폭마다 ±0.01~0.02 흔들리는 건 의미가 없다. 그래서 같은 에폭 구간의 평균도 같이 적었다.
-3. **valid와 train이 같은 물리 장면을 공유한다**(`physical_scenes_shared: true`). 절대 점수는 실제보다 높게 나온다. 다만 baseline도 조건이 같아서 **두 실행 간 비교는 유효하다.** E8 대비 상승폭은 이 이유로 과대평가돼 있다.
-4. 최종 test(56장) 결과와 실기(Jetson Orin Nano) 비교 이미지는 학습이 끝난 뒤 추가한다.
+3. **valid·test 모두 train과 같은 물리 장면을 공유한다**(`physical_scenes_shared: true`). 절대 점수는 실제보다 높게 나온다. 다만 baseline도 조건이 같아서 **두 실행 간 비교는 유효하다.** E8 대비 상승폭은 이 이유로 과대평가돼 있다. 다음 단계로 **학습에 한 장면도 쓰지 않은 독립 촬영 세션**을 시험셋으로 만든다.
+4. 실기(Jetson Orin Nano) 비교 이미지는 추가 예정이다.
 
 ## 4. 학습 중 겪은 문제와 해결 (Windows + WSL2 + RTX 5070 Ti)
 
@@ -83,7 +102,8 @@
 |---|---|---|
 | 시작 2분 만에 `RuntimeError: Unassigned GT` | B1을 0 px로 두자 8 px 미만 박스에 격자점이 하나도 없어 정답이 배정되지 않음 | 최소 박스를 10 px로 |
 | 2에폭 중반부터 점점 느려짐 (배치 10개 3.8초 → 78초) | 학습 코드에 GPU 메모리 상한이 없음(원래 메모리 64 GB인 Jetson AGX용) → PyTorch 캐시가 15.9 / 16.3 GB까지 불어남 → Windows 드라이버가 VRAM을 시스템 RAM으로 넘김(sysmem fallback). OOM 오류 없이 느려지기만 함 | `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_threshold:0.6`으로 재개 → VRAM 4.4 GB, 정상 속도 ([`tools/restart_alloc.sh`](tools/restart_alloc.sh)) |
-| 28에폭에 `Resource emergency` 중단 | `nvidia-smi`가 GPU 온도를 **184 °C**로 한 번 잘못 읽음(실제 37–53 °C). 안전장치가 한 번의 값으로 중단하는 구조 | 저장 지점(`last.pth`)부터 재개. 2–3회 연속 판정으로 바꾸는 것이 근본 해결 |
+| 28·94·100에폭에 `Resource emergency` 중단 (3회) | `nvidia-smi`가 GPU 온도를 **181–184 °C**로 한 번씩 잘못 읽음(실제 36–53 °C). 안전장치가 한 번의 값으로 중단하는 구조 | 매번 저장 지점(`last.pth`)부터 재개. 2–3회 연속 판정 / 비정상값 무시로 바꾸는 것이 근본 해결 |
+| GPU 사용률 0–60%, 에폭당 약 8–10분 | 이미지 디코딩·증강을 CPU 코어 1개로 처리(16스레드 중) → GPU가 입력을 기다림 | 다음 실행에서 데이터 로딩 worker를 여러 개로 (예상 2–3배) |
 | 원격 서버 → 집 PC 27 GB 복사가 70시간 예상 | 인터넷 경로의 패킷 손실로 TCP 연결 하나당 약 95 KB/s(cwnd 1–5, 대량 재전송) | 파일 목록을 24개로 나눠 병렬 rsync → 약 2.3 MB/s, 3.5시간 ([`tools/agx_rsync_par.sh`](tools/agx_rsync_par.sh)) |
 
 속도: RTX 5070 Ti에서 에폭당 약 7.5분(평가 포함). 같은 설정이 Jetson AGX Orin에서는 약 19분이었다. 이미지 로딩 대기가 약 28%라 GPU가 쉬는 구간이 있다.
@@ -95,7 +115,8 @@ README.md
 results/                       집계 수치만 (이미지별 정보 없음)
   valid_curves.png             이번 학습 vs baseline vs E8, 같은 에폭
   train_loss.png
-  summary_table.md
+  summary_table.md             valid 비교표
+  test_table.txt               test 56장 비교표 (E8 / baseline / 이번)
   ours_valid_epochs.jsonl      에폭별 valid 집계 지표 (이번 학습)
   bok_ratio811_valid_epochs.jsonl   baseline
   initial_E8_valid.json

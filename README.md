@@ -123,6 +123,5 @@ images/                        (추가 예정) 실기 비교 이미지
 
 ## 7. 출처 · 라이선스
 
-- 학습 코드의 원본(baseline 파이프라인)은 팀원이 ChatGPT를 활용해 작성했고, 공개 허락을 받았다. 이번 실험의 수정(B1, B2, C), 원인 분석, 도구 스크립트, 결과 정리는 저장소 소유자가 했다.
 - 외부 라이브러리: [MMDetection](https://github.com/open-mmlab/mmdetection), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine) (Apache-2.0), [PyTorch](https://github.com/pytorch/pytorch) (BSD-3-Clause), OpenCV (Apache-2.0), pycocotools (BSD-2-Clause).
 - 모델 구조: RTMDet ([Lyu et al., 2022](https://arxiv.org/abs/2212.07784)).

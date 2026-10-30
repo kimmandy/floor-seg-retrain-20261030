@@ -1,0 +1,9 @@
+# AGX /data/baseline/training/requirements.lock.txt 와 같은 버전 (torch/mmcv/mmdet 는 install.sh 에서 따로)
+mmengine==0.10.7
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+pycocotools==2.0.11
+scipy==1.15.3
+shapely==2.1.2
+terminaltables==3.1.10
+onnx==1.17.0

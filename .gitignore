@@ -1,0 +1,12 @@
+# never publish data, labels, weights or field images
+*.pth
+*.pt
+*.onnx
+*.engine
+*.coco.json
+data/
+datasets/
+runs/
+__pycache__/
+*.pyc
+*.bak*

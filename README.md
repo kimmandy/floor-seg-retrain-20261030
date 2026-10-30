@@ -51,7 +51,7 @@
 
 ### 3-1. test 56장 (best 선택에 쓰지 않은 분할)
 
-세 모델 모두 같은 평가 코드, 같은 test 56장으로 평가했다([`results/test_table.txt`](results/test_table.txt)). baseline은 학습 중이던 실행의 valid best(50에폭) 체크포인트다. 평가 코드가 학습 데이터 해시가 다른 체크포인트를 거부해서, 그 검사만 뺀 사본([`tools/eval_any.py`](tools/eval_any.py))으로 평가했다. test 분할, 정책, 클래스 검사는 그대로다.
+세 모델 모두 같은 평가 코드, 같은 test 56장으로 평가했다([`results/test_table.txt`](results/test_table.txt)). baseline은 학습 중이던 실행의 valid best(50에폭) 체크포인트다. 평가 코드가 학습 데이터 해시가 다른 체크포인트를 거부해서, 그 검사만 뺀 사본([`tools/eval_any.py`](tools/eval_any.py))으로 평가했다. test 분할, 정책, 클래스 검사는 그대로다. baseline 실행이 끝난 뒤 나온 **공식 test 결과(같은 50에폭 best)와 차이가 0.003 이하**여서 이 평가가 맞는 것을 확인했다(macro F1 0.634 vs 0.636, AP_small 0.153 vs 0.153).
 
 | 지표 | E8 (시작) | baseline best (ep 50) | **이번 best (ep 37)** |
 |---|---|---|---|
